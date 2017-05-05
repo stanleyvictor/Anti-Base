@@ -16,3 +16,4 @@
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
 *.exe  diff=astextplain
+*.ow  diff=astextplain
