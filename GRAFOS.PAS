@@ -18,18 +18,17 @@ opcao       : char;         {op‡Ço de sair ou escrever outro arquivo}
 {============ VARIAVEIS DOS ALUNOS =============}
 
 poss : Array[1..100] of integer; //vetor de vertices que possivelmente sao anti-base {|n| = vertice possivelmente anti-base ; |0| = vertice nao anti-base}
-soZero: boolean; //variavel que guarda se a coluna atual possui somente 0 ou nao
 
 {======= FIM DAS VARIAVEIS DOS ALUNOS ==========}
 
 Label 123, 456;
 
-function digrafo (nvert:integer; narestas:integer): boolean;
+function digrafo (nvert:integer): boolean;
 begin
 digrafo := false;
         for i1 := 1 to nvert do
             for j1 := 1 to nvert do
-                if ( (MAdjacencia [i1,j1] <> MAdjacencia [j1,i1]) or ((nvert = 1) and (narestas = 0)){trivial}) then
+                if ( (MAdjacencia [i1,j1] <> MAdjacencia [j1,i1]) or (nvert = 1){trivial}) then
                 digrafo := true;
 end;
 
@@ -135,7 +134,7 @@ begin
      m := 0;    
      n := i; 
 
-     if digrafo (n,m) then
+     if digrafo (n) then
      begin
           for i1 := 1 to i do
                for j1 := 1 to i do
@@ -169,7 +168,7 @@ begin
 
 {=== CODIGOS DEVEM SER IMPLEMENTADOS A PARTIR DESTA LINHA ====}
 
-     if digrafo(n,m) then
+     if digrafo(n) then
      begin
           writeln('E digrafo! Calculando Anti-base...');
 
@@ -178,45 +177,15 @@ begin
                poss[i] := i; //coloca o vertice no vetor de possibilidades
                for j:=1 to n do //colunas
                begin
-                    if(MAdjacencia[i,j] <> 0)then //possui 1 na linha atual ou nao
+                    if(i <> j)then //pula diagonal principal
+                    begin
+                         if(MAdjacencia[i,j] <> 0)then //possui 1 na linha atual ou nao
                                         poss[i] := 0; //se sim, remove o vertice do vetor de possibilidades adicionando 0 na posicao
+                    end;
                end;
           end;
 
-          i:= 1;
-          j:= 1;
-          soZero:= false;
-
-          repeat //percorrer a matriz colunas->linhas, desta vez somente com os vertices no vetor de possibilidades
-                repeat
-                      //writeln('DEBUG: Repeat 2 - [',i,'][',j,'] - Status[SoZero] = ', soZero);
-                      if (poss[i] <> 0) then //verifica se o vertice esta no vetor de possibilidades
-                      begin
-                           if(MAdjacencia[j,poss[i]] = 0) then //percorrendo matriz por colunas, poss[i] é fixo.
-                           begin
-                                soZero:= true; //a coluna e feita so de zeros?
-                           end else begin
-                               soZero:= false; //caso possua pelo menos um 1
-                               j := n; //sair da estrutura
-                           end;
-                      end;
-                      inc(j);
-                until (j > n);
-                j:=1;
-                if (soZero = true) then //caso uma coluna só possua 0
-                      begin
-                         poss[i] := 0;
-                         //poss[i+1] := 0; //sair da estrutura
-                         writeln;
-                         writeln('Digrafo nao possui anti-base!');
-                      end else begin
-                          soZero:= false;
-                          inc(i);
-                      end;
-          until (poss[i] = 0);//fim do percurso pela matriz
-
-          if(soZero <> true)then//resultados
-          begin
+               //resultados
                writeln;
                write('Vertices da Anti-Base:');
                for i:=1 to n do
@@ -226,7 +195,8 @@ begin
                end;
                write('|');
                writeln;
-          end;//fim dos resultados
+               //fimresultados
+
                //debug {mostra o vetor de possibilidades inteiro}
                writeln;
                for i:=1 to n do
