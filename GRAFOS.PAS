@@ -178,6 +178,8 @@ begin
      begin
           writeln('E digrafo! Calculando Anti-base...');
 
+          //|PERCORRE A MATRIZ DE ADJACENCIA E ADICIONA VETORES CUJAS LINHAS SÓ POSSUEM ZERO|
+
           for i:=1 to n do //linhas
           begin
                poss[i] := i; //coloca o vertice no vetor de possibilidades
@@ -191,9 +193,11 @@ begin
                end;
           end;
 
-          for i:=1 to n do
+          //|PREENCHIMENTO INICIAL DA MATRIZ DE CAMINHOS (apenas a primeira coluna)|
+
+          for i:=1 to n do//linhas
           begin
-               for j:=1 to n do
+               for j:=1 to n do//colunas
                begin
                     if(i <> j)then//pula diagonal principal
                     begin
@@ -206,10 +210,12 @@ begin
                     end else begin
                         caminho[i,j] := 0;//remove vertice [diag. principal] dos caminhos possíveis
                     end;
-               end;
-          end;
+               end;//fimcolunas
+          end;//fimlinhas
 
-          if(n > 1)then//bubble sort no vetor de caminhos |OBS:Esse IF é gigante|
+          //|BUBBLE SORT NA MATRIZ DE CAMINHOS|
+
+          if(n > 1)then//bubble sort na matriz de caminhos |OBS:Esse IF é gigante|
           begin//ComeçoIF
                for i:=1 to n do//linhas
                begin
@@ -227,7 +233,9 @@ begin
                     end;//fimrepetiçao
                end;//fimlinhas
 
-               for i:=1 to n do//linhas |Não sei nem como explicar esse em comentários|
+               //|PREENCHIMENTO SECUNDÁRIO DA MATRIZ DE CAMINHOS(o restante das colunas)|
+
+               for i:=1 to n do//linhas
                begin
                     for j:=1 to n do//colunas
                     begin
@@ -245,9 +253,11 @@ begin
                     end;//fimcolunas
                end;//fimlinhas
 
+              //|VERIFICA SE VERTICES PARA OS QUAIS 'V' POSSUI CAMINHO TAMBEM POSSUEM CAMINHO PARA 'V', SE SIM ADD AO VETOR DE POSSIBILIDADES|
+
               excaminho := false; //existe caminho?
 
-              for i:=1 to n do//linhas |compara a lista de caminhos com as colunas da matriz de adjacência| |incompleto|
+              for i:=1 to n do//linhas
               begin
                    for j:=1 to n do//colunas
                    begin
@@ -270,6 +280,21 @@ begin
                    end;//fimcolunas
                    excaminho := false;
               end;//fimlinhas
+
+              //|FAZ UMA BUSCA PELO VETOR DE POSSIBILIDADES POR VERTICES QUE POSSUEM CAMINHOS ENTRE SI E REMOVE UM DELES|
+
+              for i:=1 to n do
+              begin
+                   for aux:=1 to n do
+                   if(i <> aux)then
+                   begin
+                        if( (poss[i] <> 0) and (poss[aux] <> 0) )then
+                        begin
+                             if(MAdjacencia[poss[i],poss[aux]] <> 0)then
+                                                   poss[i] := 0;
+                        end;
+                   end;
+              end;
           end;//FimIF
 
           //resultados
